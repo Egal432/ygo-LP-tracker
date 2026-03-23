@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Yu-Gi-Oh! LP Tracker</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <style>
+    :root{
+      --bg:#000;
+      --panel:#0b0b0b;
+      --panel2:#111;
+      --line:#252525;
+      --text:#fff;
+      --muted:#a3a3a3;
+      --accent:#fff;
+      --danger:#1a1a1a;
+      --good:#fff;
+      --radius:24px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{overscroll-behavior:none}
+    .app{
+      min-height:100dvh;
+      display:flex;
+      flex-direction:column;
+      max-width:520px;
+      margin:0 auto;
+      background:var(--bg);
+      padding:8px;
+      gap:8px;
+    }
+    .panel,.center{
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      border:1px solid var(--line);
+      border-radius:32px;
+      box-shadow:0 8px 30px rgba(0,0,0,.35);
+    }
+    .panel{
+      flex:1 1 0;
+      min-height:36dvh;
+      overflow:hidden;
+    }
+    .panel-inner{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:16px;
+      transition:transform .2s ease;
+      transform-origin:center center;
+    }
+    .top-rotated{transform:rotate(180deg)}
+    .bottom-rotated{transform:rotate(180deg)}
+    .panel-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .label{
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.24em;
+      font-size:10px;
+      margin-bottom:8px;
+    }
+    .lp{
+      font-size:clamp(52px,12vw,86px);
+      line-height:.95;
+      font-weight:700;
+      letter-spacing:-.04em;
+      font-variant-numeric:tabular-nums;
+      word-break:break-word;
+    }
+    .quick{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:8px;
+    }
+    button, input{
+      border:none;
+      outline:none;
+      font:inherit;
+      color:var(--text);
+    }
+    button{
+      background:#171717;
+      border:1px solid #2b2b2b;
+      border-radius:18px;
+      min-height:46px;
+      padding:0 12px;
+      font-weight:600;
+    }
+    button:active{transform:scale(.985)}
+    .icon-btn{
+      width:48px;
+      min-width:48px;
+      padding:0;
+      font-size:20px;
+    }
+    .amount{
+      width:100%;
+      height:52px;
+      background:#050505;
+      border:1px solid #2b2b2b;
+      border-radius:18px;
+      text-align:center;
+      font-size:22px;
+      font-weight:700;
+    }
+    .change-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .big{
+      height:84px;
+      border-radius:26px;
+      font-size:34px;
+      font-weight:800;
+    }
+    .big.minus{background:#131313}
+    .big.plus{background:#fff;color:#000;border-color:#fff}
+    .center{
+      padding:12px;
+    }
+    .center-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+    .stat{
+      background:#050505;
+      border:1px solid #252525;
+      border-radius:18px;
+      padding:12px;
+      text-align:center;
+    }
+    .stat .value{
+      margin-top:4px;
+      font-size:28px;
+      font-weight:700;
+      font-variant-numeric:tabular-nums;
+    }
+    .status{
+      font-size:14px!important;
+      line-height:1.2;
+      min-height:34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .toolbar{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-bottom:8px;
+    }
+    .lp-presets{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:8px;
+    }
+    .start-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:8px;
+      margin-top:8px;
+    }
+    .small{
+      font-size:13px;
+      min-height:44px;
+    }
+    .hint{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      padding-bottom:6px;
+    }
+    @media (max-width:380px){
+      .big{font-size:28px;height:76px}
+      .quick button,.lp-presets button{font-size:12px;padding:0 6px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="panel" id="topPanel">
+      <div class="panel-inner top-rotated" id="topInner">
+        <div class="panel-head">
+          <div>
+            <div class="label">Top Player</div>
+            <div class="lp" id="lp0">8000</div>
+          </div>
+          <button class="icon-btn" id="rotate0" aria-label="Rotate top player">⟳</button>
+        </div>
+
+        <div>
+          <div class="quick">
+            <button data-quick="0" data-value="100">100</button>
+            <button data-quick="0" data-value="500">500</button>
+            <button data-quick="0" data-value="1000">1000</button>
+            <button data-quick="0" data-value="2000">2000</button>
+          </div>
+          <input class="amount" id="amount0" inputmode="numeric" pattern="[0-9]*" value="500" />
+          <div class="change-row" style="margin-top:10px">
+            <button class="big minus" id="minus0">−</button>
+            <button class="big plus" id="plus0">+</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="center">
+      <div class="toolbar">
+        <button id="undoBtn" class="small">Undo</button>
+        <button id="resetBtn" class="small">Reset Match</button>
+        <button id="timerBtn" class="small">Start Timer</button>
+        <button id="clockResetBtn" class="small">Reset Clock</button>
+      </div>
+
+      <div class="center-grid">
+        <div class="stat">
+          <div class="label">Time</div>
+          <div class="value" id="timeValue">00:00</div>
+        </div>
+        <div class="stat">
+          <div class="label">Status</div>
+          <div class="value status" id="statusValue">Even game</div>
+        </div>
+      </div>
+
+      <div class="lp-presets">
+        <button data-start="4000">4000</button>
+        <button data-start="8000">8000</button>
+        <button data-start="12000">12000</button>
+        <button data-start="16000">16000</button>
+      </div>
+
+      <div class="start-row">
+        <input class="amount" id="startingLpInput" inputmode="numeric" pattern="[0-9]*" value="8000" />
+        <button id="applyStartBtn">Apply</button>
+      </div>
+    </section>
+
+    <section class="panel" id="bottomPanel">
+      <div class="panel-inner" id="bottomInner">
+        <div class="panel-head">
+          <div>
+            <div class="label">Bottom Player</div>
+            <div class="lp" id="lp1">8000</div>
+          </div>
+          <button class="icon-btn" id="rotate1" aria-label="Rotate bottom player">⟳</button>
+        </div>
+
+        <div>
+          <div class="quick">
+            <button data-quick="1" data-value="100">100</button>
+            <button data-quick="1" data-value="500">500</button>
+            <button data-quick="1" data-value="1000">1000</button>
+            <button data-quick="1" data-value="2000">2000</button>
+          </div>
+          <input class="amount" id="amount1" inputmode="numeric" pattern="[0-9]*" value="500" />
+          <div class="change-row" style="margin-top:10px">
+            <button class="big minus" id="minus1">−</button>
+            <button class="big plus" id="plus1">+</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="hint">Install from Chrome on Android for app-like fullscreen use.</div>
+  </main>
+
+  <script>
+    const topInner = document.getElementById("topInner");
+    const bottomInner = document.getElementById("bottomInner");
+    const lpEls = [document.getElementById("lp0"), document.getElementById("lp1")];
+    const amountEls = [document.getElementById("amount0"), document.getElementById("amount1")];
+    const timeValue = document.getElementById("timeValue");
+    const statusValue = document.getElementById("statusValue");
+    const timerBtn = document.getElementById("timerBtn");
+    const startingLpInput = document.getElementById("startingLpInput");
+
+    const DEFAULT_STATE = () => ({
+      startingLP: 8000,
+      players: [
+        { lp: 8000, rotated: true, delta: 500 },
+        { lp: 8000, rotated: false, delta: 500 }
+      ],
+      elapsedSeconds: 0,
+      timerRunning: false
+    });
+
+    let state = loadState() || DEFAULT_STATE();
+    let history = [];
+    let interval = null;
+
+    function sanitizeInt(value, fallback = 0) {
+      const n = parseInt(String(value).replace(/[^\d]/g, ""), 10);
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    function cloneState(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function pushHistory() {
+      history.push(cloneState(state));
+      if (history.length > 100) history.shift();
+    }
+
+    function saveState() {
+      localStorage.setItem("ygo_lp_tracker_state", JSON.stringify(state));
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem("ygo_lp_tracker_state");
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function formatTime(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
+    }
+
+    function computeStatus() {
+      const [a, b] = state.players.map(p => p.lp);
+      if (a === 0 && b === 0) return "Draw";
+      if (a === 0) return "Bottom player wins";
+      if (b === 0) return "Top player wins";
+      if (a === b) return "Even game";
+      return a > b ? "Top player ahead" : "Bottom player ahead";
+    }
+
+    function syncTimer() {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+      if (state.timerRunning) {
+        interval = setInterval(() => {
+          state.elapsedSeconds += 1;
+          render();
+          saveState();
+        }, 1000);
+      }
+    }
+
+    function render() {
+      lpEls[0].textContent = state.players[0].lp;
+      lpEls[1].textContent = state.players[1].lp;
+      amountEls[0].value = state.players[0].delta;
+      amountEls[1].value = state.players[1].delta;
+      startingLpInput.value = state.startingLP;
+      timeValue.textContent = formatTime(state.elapsedSeconds);
+      statusValue.textContent = computeStatus();
+      timerBtn.textContent = state.timerRunning ? "Pause Timer" : "Start Timer";
+      topInner.classList.toggle("top-rotated", state.players[0].rotated);
+      bottomInner.classList.toggle("bottom-rotated", state.players[1].rotated);
+    }
+
+    function applyChange(i, sign) {
+      const delta = sanitizeInt(amountEls[i].value, state.players[i].delta || 0);
+      state.players[i].delta = delta;
+      pushHistory();
+      state.players[i].lp = Math.max(0, state.players[i].lp + sign * delta);
+      render();
+      saveState();
+    }
+
+    document.getElementById("minus0").addEventListener("click", () => applyChange(0, -1));
+    document.getElementById("plus0").addEventListener("click", () => applyChange(0, +1));
+    document.getElementById("minus1").addEventListener("click", () => applyChange(1, -1));
+    document.getElementById("plus1").addEventListener("click", () => applyChange(1, +1));
+
+    document.getElementById("rotate0").addEventListener("click", () => {
+      pushHistory();
+      state.players[0].rotated = !state.players[0].rotated;
+      render();
+      saveState();
+    });
+
+    document.getElementById("rotate1").addEventListener("click", () => {
+      pushHistory();
+      state.players[1].rotated = !state.players[1].rotated;
+      render();
+      saveState();
+    });
+
+    amountEls.forEach((el, i) => {
+      el.addEventListener("input", () => {
+        state.players[i].delta = sanitizeInt(el.value, 0);
+        el.value = state.players[i].delta;
+        saveState();
+      });
+    });
+
+    document.querySelectorAll("[data-quick]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.dataset.quick);
+        const value = Number(btn.dataset.value);
+        state.players[i].delta = value;
+        render();
+        saveState();
+      });
+    });
+
+    document.querySelectorAll("[data-start]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const value = Number(btn.dataset.start);
+        pushHistory();
+        state.startingLP = value;
+        state.players[0].lp = value;
+        state.players[1].lp = value;
+        state.elapsedSeconds = 0;
+        state.timerRunning = false;
+        syncTimer();
+        render();
+        saveState();
+      });
+    });
+
+    document.getElementById("applyStartBtn").addEventListener("click", () => {
+      const value = sanitizeInt(startingLpInput.value, 8000);
+      pushHistory();
+      state.startingLP = Math.max(1, value);
+      state.players[0].lp = state.startingLP;
+      state.players[1].lp = state.startingLP;
+      state.elapsedSeconds = 0;
+      state.timerRunning = false;
+      syncTimer();
+      render();
+      saveState();
+    });
+
+    document.getElementById("undoBtn").addEventListener("click", () => {
+      if (!history.length) return;
+      state = history.pop();
+      syncTimer();
+      render();
+      saveState();
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      pushHistory();
+      state.players[0].lp = state.startingLP;
+      state.players[1].lp = state.startingLP;
+      state.elapsedSeconds = 0;
+      state.timerRunning = false;
+      syncTimer();
+      render();
+      saveState();
+    });
+
+    document.getElementById("clockResetBtn").addEventListener("click", () => {
+      pushHistory();
+      state.elapsedSeconds = 0;
+      state.timerRunning = false;
+      syncTimer();
+      render();
+      saveState();
+    });
+
+    timerBtn.addEventListener("click", () => {
+      pushHistory();
+      state.timerRunning = !state.timerRunning;
+      syncTimer();
+      render();
+      saveState();
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js");
+      });
+    }
+
+    render();
+    syncTimer();
+  </script>
+</body>
+</html>
