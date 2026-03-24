@@ -10,10 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon-192.png" />
   <style>
-    :root{
-      --bg:#000; --panel:#000; --text:#fff; --muted:#8a8a8a; --green:#22c55e; --red:#ef4444; --blue:#3b82f6;
-      --gray:#161616; --gray2:#0d0d0d; --press:brightness(1.22); --top-line:#60a5fa; --bottom-line:#d4d4d8;
-    }
+    :root{--bg:#000;--panel:#000;--text:#fff;--muted:#8a8a8a;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--gray:#161616;--gray2:#0d0d0d;--press:brightness(1.22);--top-line:#60a5fa;--bottom-line:#d4d4d8}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     body{overscroll-behavior:none}
@@ -26,9 +23,11 @@
     .head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
     .label{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
     .name-input{background:transparent;color:#fff;border:none;outline:none;font-size:16px;font-weight:700;padding:0;margin:0 0 8px 0;width:100%}
+    .lp-row{display:flex;align-items:center;gap:10px}
     .lp{font-size:clamp(48px,13vw,88px);font-weight:800;letter-spacing:-.05em;line-height:.9;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;transform-origin:center center}
     .lp.bump{animation:lpBump .26s ease}
     @keyframes lpBump{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+    .turn-badge{width:34px;height:34px;display:block;flex:0 0 auto}
     .player-time-block{margin-top:10px}
     .player-time{font-size:clamp(20px,5vw,34px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums;transition:transform .14s ease, box-shadow .18s ease, color .18s ease}
     .player-time.low{color:#fca5a5;animation:lowPulse 1s ease-in-out infinite}
@@ -37,31 +36,26 @@
     .icon-btn,.circle-btn,.mini-btn,.preset-btn,.ghost-btn,.action-btn,.apply-btn,.cancel-btn,.confirm-btn,.start-input,.time-input,.match-clock{border:none;outline:none;border-radius:999px}
     .icon-btn,.circle-btn,.mini-btn,.preset-btn,.ghost-btn,.action-btn{color:#fff;background:var(--gray)}
     .icon-btn svg,.mini-btn svg,.action-btn svg{width:22px;height:22px;display:block}
-    button{transition:transform .08s ease, filter .08s ease, opacity .12s ease, background-color .12s ease, color .12s ease, box-shadow .16s ease}
+    button{transition:transform .08s ease,filter .08s ease,opacity .12s ease,background-color .12s ease,color .12s ease,box-shadow .16s ease}
     button:active{transform:scale(.95);filter:var(--press)}
     button:disabled{opacity:.35}
     .icon-btn{width:46px;height:46px;display:grid;place-items:center}
     .action-btn{height:min(20vw,96px);aspect-ratio:1/1;width:100%;max-width:96px;justify-self:center;font-size:34px;font-weight:800;display:grid;place-items:center}
-    .minus{background:var(--red);color:#fff}
-    .plus{background:var(--green);color:#04130a}
-    .turn-btn{background:#0b0b0b;color:var(--blue);font-size:22px;font-weight:800}
+    .minus{background:var(--red);color:#fff}.plus{background:var(--green);color:#04130a}
+    .turn-btn{background:#0b0b0b;color:var(--blue);font-size:26px;font-weight:800}
     .turn-btn.active{background:var(--blue);color:#000;box-shadow:0 0 0 2px rgba(59,130,246,.18) inset,0 0 22px rgba(59,130,246,.18);animation:turnPulse 1.3s ease-in-out infinite}
     @keyframes turnPulse{0%,100%{box-shadow:0 0 0 2px rgba(59,130,246,.18) inset,0 0 10px rgba(59,130,246,.16)}50%{box-shadow:0 0 0 2px rgba(59,130,246,.18) inset,0 0 24px rgba(59,130,246,.34)}}
-    .turn-btn.disabled{opacity:.45}
+    .turn-btn.inactive{opacity:.42}
     .center{padding:10px;display:grid;gap:8px;grid-template-columns:1fr 1fr 1.25fr 1fr 1fr 1fr;align-items:stretch}
     .match-clock{min-height:58px;background:#0d0d0d;color:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;user-select:none}
     .match-clock .value{font-size:22px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
     .match-clock .sub{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
     .match-clock.off{opacity:.35}
     .mini-btn{min-height:58px;display:grid;place-items:center;padding:0;font-size:20px;font-weight:700;background:#111}
-    .undo{background:var(--blue);color:#fff}
-    .redo{background:#2a2a2a;color:#fff}
-    .settings-btn,.history-btn,.reset-btn{background:#141414}
-    .redo.disabled,.undo.disabled{opacity:.35}
-    .reset-btn.arming svg{animation:spin3 3s linear forwards}
-    .reset-btn.arming{box-shadow:0 0 0 2px rgba(239,68,68,.2) inset,0 0 18px rgba(239,68,68,.22)}
-    @keyframes spin3{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-    .invisible{opacity:.35}
+    .undo{background:var(--blue);color:#fff}.redo{background:#2a2a2a;color:#fff}.settings-btn,.history-btn,.reset-btn{background:#141414}.redo.disabled,.undo.disabled{opacity:.35}
+    .reset-btn{position:relative;overflow:hidden;background:radial-gradient(circle at center, #141414 63%, transparent 64%), conic-gradient(var(--red) calc(var(--hold, 0)*1turn), #222 0);}
+    .reset-btn.arming{box-shadow:0 0 0 2px rgba(239,68,68,.18) inset,0 0 18px rgba(239,68,68,.22)}
+    .collapsed{display:none !important}
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.84);display:flex;align-items:flex-end;justify-content:center;padding:12px;z-index:20}
     .sheet,.settings,.history-sheet{width:min(100%,440px);padding:14px}
     .sheet-head,.settings-head,.history-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
@@ -72,45 +66,26 @@
     .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
     .circle-btn{aspect-ratio:1/1;width:100%;display:grid;place-items:center;font-size:24px;font-weight:700;background:#121212}
     .confirm-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .confirm-btn,.cancel-btn{height:54px;font-weight:700;font-size:17px}
-    .confirm-plus{background:var(--green);color:#04130a}
-    .confirm-minus{background:var(--red);color:#fff}
-    .cancel-btn{background:#181818;color:#fff}
+    .confirm-btn,.cancel-btn{height:54px;font-weight:700;font-size:17px}.confirm-plus{background:var(--green);color:#04130a}.confirm-minus{background:var(--red);color:#fff}.cancel-btn{background:#181818;color:#fff}
     .settings-body{display:grid;gap:16px;max-height:70dvh;overflow:auto}
-    .setting-block{display:grid;gap:8px}
-    .setting-title{font-size:14px;color:#d5d5d5;font-weight:600}
+    .setting-block{display:grid;gap:8px}.setting-title{font-size:14px;color:#d5d5d5;font-weight:600}
     .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#0d0d0d;padding:12px 14px;border-radius:22px}
     .toggle{width:58px;height:34px;background:#1a1a1a;position:relative;cursor:pointer;border:none;border-radius:999px}
     .toggle::after{content:"";position:absolute;width:26px;height:26px;border-radius:50%;top:4px;left:4px;background:#fff;transition:transform .18s ease}
-    .toggle.on{background:var(--blue)}
-    .toggle.on::after{transform:translateX(24px)}
-    .collapsed{display:none !important}
-    .segmented{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .segmented-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .preset-btn,.ghost-btn{height:52px;background:#111;color:#fff;font-weight:700}
-    .preset-btn.active,.ghost-btn.active{background:var(--blue);color:#000}
+    .toggle.on{background:var(--blue)}.toggle.on::after{transform:translateX(24px)}
+    .segmented{display:grid;grid-template-columns:1fr 1fr;gap:10px}.segmented-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .preset-btn,.ghost-btn{height:52px;background:#111;color:#fff;font-weight:700}.preset-btn.active,.ghost-btn.active{background:var(--blue);color:#000}
     .start-row{display:grid;grid-template-columns:1fr auto;gap:10px}
     .start-input{height:54px;background:#0c0c0c;color:#fff;text-align:center;font-size:22px;font-weight:700;outline:none;width:100%}
     .apply-btn{height:54px;padding:0 20px;background:#fff;color:#000;font-weight:700;font-size:16px}
-    .tiny{font-size:12px;color:var(--muted);line-height:1.2}
-    .inline-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+    .tiny{font-size:12px;color:var(--muted);line-height:1.2}.inline-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
     .time-input{width:120px;height:52px;background:#0c0c0c;color:#fff;text-align:center;font-size:20px;font-weight:800;outline:none}
-    .history-list{max-height:36dvh;overflow:auto;display:grid;gap:8px}
-    .history-item{background:#0c0c0c;padding:12px 14px;border-radius:22px;display:grid;gap:4px}
-    .history-item .topline{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:#d9d9d9}
-    .history-item .subline{font-size:12px;color:var(--muted)}
-    .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-    .summary-card{background:#0c0c0c;border-radius:22px;padding:12px}
-    .summary-card .small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
-    .summary-card .big{font-size:22px;font-weight:800;margin-top:4px}
-    .chart-card{background:#0c0c0c;border-radius:22px;padding:10px;margin-bottom:8px}
-    .chart-title{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .history-list{max-height:36dvh;overflow:auto;display:grid;gap:8px}.history-item{background:#0c0c0c;padding:12px 14px;border-radius:22px;display:grid;gap:4px}
+    .history-item .topline{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:#d9d9d9}.history-item .subline{font-size:12px;color:var(--muted)}
+    .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.summary-card{background:#0c0c0c;border-radius:22px;padding:12px}.summary-card .small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}.summary-card .big{font-size:22px;font-weight:800;margin-top:4px}
+    .chart-card{background:#0c0c0c;border-radius:22px;padding:10px;margin-bottom:8px}.chart-title{font-size:12px;color:var(--muted);margin-bottom:6px}
     canvas{width:100%;height:120px;display:block}
-    @media (max-height:760px){
-      .app{gap:6px;padding:6px}.panel-inner{padding:12px}.center{padding:8px}.lp{font-size:clamp(42px,12vw,74px)}
-      .action-btn{height:min(18vw,82px);max-width:82px;font-size:30px}.mini-btn,.match-clock{min-height:52px}.player-time{font-size:clamp(18px,4vw,28px)}
-      .summary-grid{grid-template-columns:1fr}
-    }
+    @media (max-height:760px){.app{gap:6px;padding:6px}.panel-inner{padding:12px}.center{padding:8px}.lp{font-size:clamp(42px,12vw,74px)}.action-btn{height:min(18vw,82px);max-width:82px;font-size:30px}.mini-btn,.match-clock{min-height:52px}.player-time{font-size:clamp(18px,4vw,28px)}.summary-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -121,12 +96,10 @@
           <div style="min-width:0;flex:1">
             <div class="label">Player</div>
             <input class="name-input" id="name0" value="Top Player" />
-            <div class="lp" id="lp0">8000</div>
+            <div class="lp-row"><div class="lp" id="lp0">8000</div><svg class="turn-badge" id="turnBadge0" viewBox="0 0 40 40"></svg></div>
             <div class="player-time-block"><div class="label">Time</div><div class="player-time" id="time0">03:00</div></div>
           </div>
-          <button class="icon-btn" id="rotate0" aria-label="Rotate">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-          </button>
+          <button class="icon-btn" id="rotate0" aria-label="Rotate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
         </div>
         <div class="controls">
           <button class="action-btn minus" id="minus0">−</button>
@@ -137,25 +110,12 @@
     </section>
 
     <section class="center">
-      <button class="mini-btn undo" id="undoBtn" aria-label="Undo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M20 20a8 8 0 0 0-8-8H4"/></svg>
-      </button>
-      <button class="mini-btn redo" id="redoBtn" aria-label="Redo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M4 20a8 8 0 0 1 8-8h8"/></svg>
-      </button>
-      <button class="match-clock" id="matchClockBtn" aria-label="Match clock">
-        <div class="value" id="matchClockValue">20:00</div>
-        <div class="sub" id="matchClockState">turn 1 • paused</div>
-      </button>
-      <button class="mini-btn history-btn" id="historyBtn" aria-label="History">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 6h10"/><path d="M7 12h10"/><path d="M7 18h10"/></svg>
-      </button>
-      <button class="mini-btn settings-btn" id="settingsBtn" aria-label="Settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1 1 0 0 0 .2 1.1l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9V20a2 2 0 1 1-4 0v-.2a1 1 0 0 0-.7-.9 1 1 0 0 0-1.1.2l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H4a2 2 0 1 1 0-4h.2a1 1 0 0 0 .9-.7 1 1 0 0 0-.2-1.1l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1 1 0 0 0 1.1.2h.1a1 1 0 0 0 .6-.9V4a2 2 0 1 1 4 0v.2a1 1 0 0 0 .7.9 1 1 0 0 0 1.1-.2l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1 1 0 0 0-.2 1.1v.1a1 1 0 0 0 .9.6H20a2 2 0 1 1 0 4h-.2a1 1 0 0 0-.9.7Z"/></svg>
-      </button>
-      <button class="mini-btn reset-btn" id="mainResetBtn" aria-label="Hold to reset">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-      </button>
+      <button class="mini-btn undo" id="undoBtn" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a8 8 0 0 0-8-8H4"/><path d="M8 8l-4 4 4 4"/></svg></button>
+      <button class="mini-btn redo" id="redoBtn" aria-label="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20a8 8 0 0 1 8-8h8"/><path d="m16 8 4 4-4 4"/></svg></button>
+      <button class="match-clock" id="matchClockBtn" aria-label="Match clock"><div class="value" id="matchClockValue">20:00</div><div class="sub" id="matchClockState">paused</div></button>
+      <button class="mini-btn history-btn" id="historyBtn" aria-label="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 6h10"/><path d="M7 12h10"/><path d="M7 18h10"/></svg></button>
+      <button class="mini-btn settings-btn" id="settingsBtn" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1 1 0 0 0 .2 1.1l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9V20a2 2 0 1 1-4 0v-.2a1 1 0 0 0-.7-.9 1 1 0 0 0-1.1.2l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H4a2 2 0 1 1 0-4h.2a1 1 0 0 0 .9-.7 1 1 0 0 0-.2-1.1l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1 1 0 0 0 1.1.2h.1a1 1 0 0 0 .6-.9V4a2 2 0 1 1 4 0v.2a1 1 0 0 0 .7.9 1 1 0 0 0 1.1-.2l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1 1 0 0 0-.2 1.1v.1a1 1 0 0 0 .9.6H20a2 2 0 1 1 0 4h-.2a1 1 0 0 0-.9.7Z"/></svg></button>
+      <button class="mini-btn reset-btn" id="mainResetBtn" aria-label="Hold to reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
     </section>
 
     <section class="panel">
@@ -164,12 +124,10 @@
           <div style="min-width:0;flex:1">
             <div class="label">Player</div>
             <input class="name-input" id="name1" value="Bottom Player" />
-            <div class="lp" id="lp1">8000</div>
+            <div class="lp-row"><div class="lp" id="lp1">8000</div><svg class="turn-badge" id="turnBadge1" viewBox="0 0 40 40"></svg></div>
             <div class="player-time-block"><div class="label">Time</div><div class="player-time" id="time1">03:00</div></div>
           </div>
-          <button class="icon-btn" id="rotate1" aria-label="Rotate">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-          </button>
+          <button class="icon-btn" id="rotate1" aria-label="Rotate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
         </div>
         <div class="controls">
           <button class="action-btn minus" id="minus1">−</button>
@@ -182,10 +140,7 @@
 
   <div class="overlay collapsed" id="keypadOverlay">
     <section class="sheet" id="keypadSheet">
-      <div class="sheet-head">
-        <div><div class="label" id="sheetPlayerLabel">Player 1</div><div class="title" id="sheetActionTitle">Add LP</div></div>
-        <button class="icon-btn" id="closeSheetBtn" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button>
-      </div>
+      <div class="sheet-head"><div><div class="label" id="sheetPlayerLabel">Player 1</div><div class="title" id="sheetActionTitle">Add LP</div></div><button class="icon-btn" id="closeSheetBtn" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div>
       <div class="amount-display"><div class="big" id="keypadValue">0</div></div>
       <div class="keypad-hint" id="keypadHint">Last used value loaded. First tap replaces it.</div>
       <div class="keypad">
@@ -204,54 +159,30 @@
       <div class="settings-body">
         <div class="setting-block">
           <div class="setting-title">Starting LP</div>
-          <div class="segmented">
-            <button class="preset-btn" data-start="4000">4000</button><button class="preset-btn" data-start="8000">8000</button>
-            <button class="preset-btn" data-start="12000">12000</button><button class="preset-btn" data-start="16000">16000</button>
-          </div>
+          <div class="segmented"><button class="preset-btn" data-start="4000">4000</button><button class="preset-btn" data-start="8000">8000</button><button class="preset-btn" data-start="12000">12000</button><button class="preset-btn" data-start="16000">16000</button></div>
           <div class="start-row"><input class="start-input" id="startingLpInput" inputmode="numeric" value="8000" /><button class="apply-btn" id="applyStartBtn">Apply</button></div>
         </div>
-
         <div class="setting-block">
           <div class="setting-title">Chess clock mode</div>
-          <div class="toggle-row">
-            <div><div>Enable per-player timers</div><div class="tiny">The active player is blue. Press the blue button to hand the move over.</div></div>
-            <button class="toggle on" id="timerEnabledToggle"></button>
-          </div>
+          <div class="toggle-row"><div><div>Enable per-player timers</div><div class="tiny">The active player is blue. Only the active player can hand the turn over.</div></div><button class="toggle on" id="timerEnabledToggle"></button></div>
         </div>
-
-        <div class="setting-block collapsed" id="chessMenuBlock">
+        <div class="setting-block" id="chessMenuBlock">
           <div class="setting-title">Presets</div>
-          <div class="segmented-3">
-            <button class="ghost-btn" data-preset="bullet">• Bullet</button>
-            <button class="ghost-btn" data-preset="blitz">⚡ Blitz</button>
-            <button class="ghost-btn" data-preset="quick">◔ Quick</button>
-          </div>
+          <div class="segmented-3"><button class="ghost-btn" data-preset="bullet">• Bullet</button><button class="ghost-btn" data-preset="blitz">⚡ Blitz</button><button class="ghost-btn" data-preset="quick">◔ Quick</button></div>
           <div class="setting-title">Base time</div>
-          <div class="segmented-3">
-            <button class="ghost-btn" data-base-min="1">1 min</button>
-            <button class="ghost-btn" data-base-min="3">3 min</button>
-            <button class="ghost-btn" data-base-min="5">5 min</button>
-          </div>
+          <div class="segmented-3"><button class="ghost-btn" data-base-min="1">1 min</button><button class="ghost-btn" data-base-min="3">3 min</button><button class="ghost-btn" data-base-min="5">5 min</button></div>
           <div class="inline-row"><div class="tiny">Custom minutes</div><input class="time-input" id="baseMinutesInput" inputmode="numeric" value="3" /></div>
           <div class="setting-title">Increment per move</div>
-          <div class="segmented-3">
-            <button class="ghost-btn" data-inc-sec="0">0 sec</button>
-            <button class="ghost-btn" data-inc-sec="2">2 sec</button>
-            <button class="ghost-btn" data-inc-sec="5">5 sec</button>
-          </div>
+          <div class="segmented-3"><button class="ghost-btn" data-inc-sec="0">0 sec</button><button class="ghost-btn" data-inc-sec="2">2 sec</button><button class="ghost-btn" data-inc-sec="5">5 sec</button></div>
           <div class="inline-row"><div class="tiny">Custom seconds</div><input class="time-input" id="incrementInput" inputmode="numeric" value="0" /></div>
           <div class="setting-title">Who starts</div>
           <div class="segmented"><button class="ghost-btn" id="starter0Btn">Top</button><button class="ghost-btn" id="starter1Btn">Bottom</button></div>
           <div class="setting-title">Timer controls</div>
           <div class="segmented"><button class="ghost-btn" id="pauseTimersBtn">Pause</button><button class="ghost-btn" id="resetTimersBtn">Reset</button></div>
         </div>
-
         <div class="setting-block">
           <div class="setting-title">Match clock</div>
-          <div class="toggle-row">
-            <div><div>Enable center countdown</div><div class="tiny">Tap the center clock to start or pause it.</div></div>
-            <button class="toggle on" id="matchClockToggle"></button>
-          </div>
+          <div class="toggle-row"><div><div>Enable center countdown</div><div class="tiny">Tap the center clock to start or pause it.</div></div><button class="toggle on" id="matchClockToggle"></button></div>
           <div class="inline-row"><div class="tiny">Minutes</div><input class="time-input" id="matchMinutesInput" inputmode="numeric" value="20" /></div>
           <div class="segmented"><button class="ghost-btn" id="matchPauseBtn">Pause</button><button class="ghost-btn" id="matchResetBtn">Reset</button></div>
         </div>
@@ -261,176 +192,150 @@
 
   <div class="overlay collapsed" id="historyOverlay">
     <section class="history-sheet">
-      <div class="history-head">
-        <div class="title">LP History</div>
-        <div style="display:flex;gap:8px">
-          <button class="mini-btn history-btn" id="exportLogBtn" aria-label="Export log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
-          <button class="icon-btn" id="closeHistoryBtn" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button>
-        </div>
-      </div>
-
+      <div class="history-head"><div class="title">LP History</div><div style="display:flex;gap:8px"><button class="mini-btn history-btn" id="exportLogBtn" aria-label="Export log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button><button class="icon-btn" id="closeHistoryBtn" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button></div></div>
       <div class="summary-grid">
         <div class="summary-card"><div class="small">Top total damage</div><div class="big" id="sumTopDamage">0</div></div>
         <div class="summary-card"><div class="small">Bottom total damage</div><div class="big" id="sumBottomDamage">0</div></div>
-        <div class="summary-card"><div class="small">Top biggest heal</div><div class="big" id="sumTopHeal">0</div></div>
-        <div class="summary-card"><div class="small">Bottom biggest heal</div><div class="big" id="sumBottomHeal">0</div></div>
+        <div class="summary-card"><div class="small">Top turns</div><div class="big" id="sumTopTurns">0</div></div>
+        <div class="summary-card"><div class="small">Bottom turns</div><div class="big" id="sumBottomTurns">0</div></div>
       </div>
-
-      <div class="chart-card">
-        <div class="chart-title" id="chartTopTitle">Top Player LP trend</div>
-        <canvas id="chartTop"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title" id="chartBottomTitle">Bottom Player LP trend</div>
-        <canvas id="chartBottom"></canvas>
-      </div>
-
+      <div class="chart-card"><div class="chart-title" id="chartTopTitle">Top Player LP trend</div><canvas id="chartTop"></canvas></div>
+      <div class="chart-card"><div class="chart-title" id="chartBottomTitle">Bottom Player LP trend</div><canvas id="chartBottom"></canvas></div>
       <div class="history-list" id="historyList"></div>
     </section>
   </div>
 
   <script>
-    const STORAGE_KEY = "ygo_lp_tracker_v6_state";
-    const PREFS_KEY = "ygo_lp_tracker_v6_prefs";
-    const DEFAULT_PREFS = () => ({startingLP:8000,timerEnabled:true,baseMinutes:3,incrementSeconds:0,matchClockEnabled:true,matchMinutes:20,playerNames:["Top Player","Bottom Player"],lastAmounts:[500,500]});
-    const DEFAULT_STATE = (prefs) => ({players:[{lp:prefs.startingLP,rotated:true,timeLeft:prefs.baseMinutes*60},{lp:prefs.startingLP,rotated:false,timeLeft:prefs.baseMinutes*60}],activePlayer:null,turnCounter:1,matchClockSeconds:prefs.matchMinutes*60,matchClockRunning:false,lpHistory:[]});
+    const STORAGE_KEY = "ygo_lp_tracker_v7_state";
+    const PREFS_KEY = "ygo_lp_tracker_v7_prefs";
+    const DEFAULT_PREFS = () => ({startingLP:8000,timerEnabled:true,baseMinutes:3,incrementSeconds:0,matchClockEnabled:true,matchMinutes:20,playerNames:["Top Player","Bottom Player"],lastAmounts:[500,500],startingPlayer:0});
+    const DEFAULT_STATE = (prefs) => ({players:[{lp:prefs.startingLP,rotated:true,timeLeft:prefs.baseMinutes*60},{lp:prefs.startingLP,rotated:false,timeLeft:prefs.baseMinutes*60}],activePlayer:prefs.startingPlayer,turnCounts:prefs.startingPlayer===0?[1,0]:[0,1],matchClockSeconds:prefs.matchMinutes*60,matchClockRunning:false,lpHistory:[]});
     let prefs = loadPrefs() || DEFAULT_PREFS();
     let state = loadState() || DEFAULT_STATE(prefs);
-    let lpUndo = [], lpRedo = [], timerId = null, matchTimerId = null, pendingAction = null, turnCooldownUntil = 0, resetHoldTimeout = null;
+    let lpUndo = []; let lpRedo = []; let timerId = null; let matchTimerId = null; let pendingAction = null; let turnCooldownUntil = 0; let resetHoldTimeout = null; let resetRAF = null;
 
-    const lpEls=[document.getElementById("lp0"),document.getElementById("lp1")];
-    const timeEls=[document.getElementById("time0"),document.getElementById("time1")];
-    const innerEls=[document.getElementById("player0Inner"),document.getElementById("player1Inner")];
-    const turnBtns=[document.getElementById("turn0"),document.getElementById("turn1")];
-    const nameEls=[document.getElementById("name0"),document.getElementById("name1")];
-    const undoBtn=document.getElementById("undoBtn"), redoBtn=document.getElementById("redoBtn"), resetBtn=document.getElementById("mainResetBtn");
-    const matchClockBtn=document.getElementById("matchClockBtn"), matchClockValue=document.getElementById("matchClockValue"), matchClockState=document.getElementById("matchClockState");
-    const startingLpInput=document.getElementById("startingLpInput"), timerEnabledToggle=document.getElementById("timerEnabledToggle"), baseMinutesInput=document.getElementById("baseMinutesInput"), incrementInput=document.getElementById("incrementInput"), chessMenuBlock=document.getElementById("chessMenuBlock"), matchClockToggle=document.getElementById("matchClockToggle"), matchMinutesInput=document.getElementById("matchMinutesInput"), historyList=document.getElementById("historyList"), keypadHint=document.getElementById("keypadHint");
+    const lpEls=[document.getElementById('lp0'),document.getElementById('lp1')];
+    const timeEls=[document.getElementById('time0'),document.getElementById('time1')];
+    const badgeEls=[document.getElementById('turnBadge0'),document.getElementById('turnBadge1')];
+    const innerEls=[document.getElementById('player0Inner'),document.getElementById('player1Inner')];
+    const turnBtns=[document.getElementById('turn0'),document.getElementById('turn1')];
+    const nameEls=[document.getElementById('name0'),document.getElementById('name1')];
+    const undoBtn=document.getElementById('undoBtn'); const redoBtn=document.getElementById('redoBtn'); const resetBtn=document.getElementById('mainResetBtn');
+    const matchClockBtn=document.getElementById('matchClockBtn'); const matchClockValue=document.getElementById('matchClockValue'); const matchClockState=document.getElementById('matchClockState');
+    const startingLpInput=document.getElementById('startingLpInput'); const timerEnabledToggle=document.getElementById('timerEnabledToggle'); const baseMinutesInput=document.getElementById('baseMinutesInput'); const incrementInput=document.getElementById('incrementInput'); const chessMenuBlock=document.getElementById('chessMenuBlock'); const matchClockToggle=document.getElementById('matchClockToggle'); const matchMinutesInput=document.getElementById('matchMinutesInput'); const historyList=document.getElementById('historyList'); const keypadHint=document.getElementById('keypadHint');
 
     function savePrefs(){localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));}
     function loadPrefs(){try{const raw=localStorage.getItem(PREFS_KEY);return raw?JSON.parse(raw):null;}catch{return null;}}
     function saveState(){localStorage.setItem(STORAGE_KEY, JSON.stringify(state));}
     function loadState(){try{const raw=localStorage.getItem(STORAGE_KEY);return raw?JSON.parse(raw):null;}catch{return null;}}
     function clone(v){return JSON.parse(JSON.stringify(v));}
-    function sanitizeInt(value,fallback=0){const n=parseInt(String(value).replace(/[^0-9]/g,""),10);return Number.isFinite(n)?n:fallback;}
-    function formatTime(totalSeconds){const safe=Math.max(0,totalSeconds|0);const mins=Math.floor(safe/60);const secs=safe%60;return String(mins).padStart(2,"0")+":"+String(secs).padStart(2,"0");}
-    function stamp(){return new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});}
+    function sanitizeInt(value,fallback=0){const n=parseInt(String(value).replace(/[^0-9]/g,''),10);return Number.isFinite(n)?n:fallback;}
+    function formatTime(totalSeconds){const safe=Math.max(0,totalSeconds|0);const mins=Math.floor(safe/60);const secs=safe%60;return String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');}
+    function stamp(){return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});}
     function pushLPUndo(){lpUndo.push({players:clone(state.players),lpHistory:clone(state.lpHistory)});if(lpUndo.length>100)lpUndo.shift();lpRedo=[];}
-    function animateLP(playerIndex){const el=lpEls[playerIndex];el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump");}
-    function computeHistoryStats(){const stats={damage:[0,0],biggestHeal:[0,0]};state.lpHistory.forEach(entry=>{if(entry.type==="subtract")stats.damage[entry.playerIndex]+=entry.amount;if(entry.type==="add")stats.biggestHeal[entry.playerIndex]=Math.max(stats.biggestHeal[entry.playerIndex],entry.amount);});return stats;}
+    function animateLP(idx){const el=lpEls[idx];el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');}
+
+    function drawTurnBadge(svg, count){
+      const n = Math.max(0, count|0);
+      let shape = '';
+      if (n <= 0) {
+        shape = '<circle cx="20" cy="20" r="12" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2" />';
+        svg.innerHTML = shape;
+        return;
+      }
+      if (n === 1) {
+        shape = '<circle cx="20" cy="20" r="13" fill="white" />';
+      } else if (n === 2) {
+        shape = '<rect x="7" y="12" width="26" height="16" rx="8" fill="white" />';
+      } else {
+        const sides = Math.min(n, 10);
+        const pts=[]; const cx=20, cy=20, r=13;
+        for(let i=0;i<sides;i++){ const a=(-Math.PI/2)+(i*2*Math.PI/sides); pts.push(`${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`); }
+        shape = `<polygon points="${pts.join(' ')}" fill="white" />`;
+      }
+      const text = `<text x="20" y="24" text-anchor="middle" font-size="12" font-weight="800" fill="black">${Math.min(n,99)}</text>`;
+      svg.innerHTML = shape + text;
+    }
+
+    function computeHistoryStats(){const stats={damage:[0,0]};state.lpHistory.forEach(entry=>{if(entry.type==='subtract')stats.damage[entry.playerIndex]+=entry.amount;});return stats;}
     function buildSeries(playerIndex){const series=[prefs.startingLP];let current=prefs.startingLP;state.lpHistory.forEach(entry=>{if(entry.playerIndex===playerIndex)current=entry.after;series.push(current);});return series;}
-    function drawLineChart(canvasId, values, color){
-      const canvas=document.getElementById(canvasId);const rect=canvas.getBoundingClientRect();const dpr=window.devicePixelRatio||1;
-      const width=Math.max(280,Math.floor(rect.width*dpr));const height=Math.max(120,Math.floor(rect.height*dpr));canvas.width=width;canvas.height=height;
-      const ctx=canvas.getContext("2d");ctx.clearRect(0,0,width,height);const pad=16*dpr;const minVal=Math.min(...values);const maxVal=Math.max(...values,minVal+1);const xStep=values.length>1?(width-pad*2)/(values.length-1):0;
-      ctx.strokeStyle="rgba(255,255,255,0.08)";ctx.lineWidth=1*dpr;for(let i=0;i<3;i++){const y=pad+i*((height-pad*2)/2);ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(width-pad,y);ctx.stroke();}
-      ctx.strokeStyle=color;ctx.lineWidth=2.5*dpr;ctx.beginPath();values.forEach((val,i)=>{const x=pad+i*xStep;const t=(val-minVal)/(maxVal-minVal||1);const y=height-pad-t*(height-pad*2);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();
-      const lastVal=values[values.length-1];const lx=pad+(values.length-1)*xStep;const lt=(lastVal-minVal)/(maxVal-minVal||1);const ly=height-pad-lt*(height-pad*2);ctx.fillStyle=color;ctx.beginPath();ctx.arc(lx,ly,4*dpr,0,Math.PI*2);ctx.fill();
-    }
-    function renderHistory(){
-      historyList.innerHTML="";const stats=computeHistoryStats();
-      document.getElementById("sumTopDamage").textContent=stats.damage[0];document.getElementById("sumBottomDamage").textContent=stats.damage[1];
-      document.getElementById("sumTopHeal").textContent=stats.biggestHeal[0];document.getElementById("sumBottomHeal").textContent=stats.biggestHeal[1];
-      document.getElementById("chartTopTitle").textContent=`${prefs.playerNames[0]||"Top Player"} LP trend`;document.getElementById("chartBottomTitle").textContent=`${prefs.playerNames[1]||"Bottom Player"} LP trend`;
-      drawLineChart("chartTop",buildSeries(0),getComputedStyle(document.documentElement).getPropertyValue("--top-line").trim()||"#60a5fa");
-      drawLineChart("chartBottom",buildSeries(1),getComputedStyle(document.documentElement).getPropertyValue("--bottom-line").trim()||"#d4d4d8");
-      if(!state.lpHistory.length){const div=document.createElement("div");div.className="history-item";div.innerHTML='<div class="topline"><span>No LP changes yet</span></div>';historyList.appendChild(div);return;}
-      [...state.lpHistory].reverse().forEach(entry=>{const div=document.createElement("div");div.className="history-item";div.innerHTML=`<div class="topline"><span>${entry.playerLabel} ${entry.type==="add"?"+":"-"}${entry.amount}</span><span>${entry.time}</span></div><div class="subline">${entry.before} → ${entry.after}</div>`;historyList.appendChild(div);});
-    }
-    function resetPlayerTimes(){const secs=Math.max(1,sanitizeInt(prefs.baseMinutes,3))*60;state.players[0].timeLeft=secs;state.players[1].timeLeft=secs;state.activePlayer=null;state.turnCounter=1;}
+    function drawLineChart(canvasId, values, color){const canvas=document.getElementById(canvasId);const rect=canvas.getBoundingClientRect();const dpr=window.devicePixelRatio||1;const width=Math.max(280,Math.floor(rect.width*dpr));const height=Math.max(120,Math.floor(rect.height*dpr));canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,width,height);const pad=16*dpr;const minVal=Math.min(...values);const maxVal=Math.max(...values,minVal+1);const xStep=values.length>1?(width-pad*2)/(values.length-1):0;ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1*dpr;for(let i=0;i<3;i++){const y=pad+i*((height-pad*2)/2);ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(width-pad,y);ctx.stroke();}ctx.strokeStyle=color;ctx.lineWidth=2.5*dpr;ctx.beginPath();values.forEach((val,i)=>{const x=pad+i*xStep;const t=(val-minVal)/(maxVal-minVal||1);const y=height-pad-t*(height-pad*2);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();}
+
+    function renderHistory(){historyList.innerHTML='';const stats=computeHistoryStats();document.getElementById('sumTopDamage').textContent=stats.damage[0];document.getElementById('sumBottomDamage').textContent=stats.damage[1];document.getElementById('sumTopTurns').textContent=state.turnCounts[0]||0;document.getElementById('sumBottomTurns').textContent=state.turnCounts[1]||0;document.getElementById('chartTopTitle').textContent=`${prefs.playerNames[0]||'Top Player'} LP trend`;document.getElementById('chartBottomTitle').textContent=`${prefs.playerNames[1]||'Bottom Player'} LP trend`;drawLineChart('chartTop', buildSeries(0), getComputedStyle(document.documentElement).getPropertyValue('--top-line').trim()||'#60a5fa');drawLineChart('chartBottom', buildSeries(1), getComputedStyle(document.documentElement).getPropertyValue('--bottom-line').trim()||'#d4d4d8');if(!state.lpHistory.length){const div=document.createElement('div');div.className='history-item';div.innerHTML='<div class="topline"><span>No LP changes yet</span></div>';historyList.appendChild(div);return;}[...state.lpHistory].reverse().forEach(entry=>{const div=document.createElement('div');div.className='history-item';div.innerHTML=`<div class="topline"><span>${entry.playerLabel} ${entry.type==='add'?'+':'-'}${entry.amount}</span><span>${entry.time}</span></div><div class="subline">${entry.before} → ${entry.after}</div>`;historyList.appendChild(div);});}
+
+    function resetPlayerTimes(){const secs=Math.max(1,sanitizeInt(prefs.baseMinutes,3))*60;state.players[0].timeLeft=secs;state.players[1].timeLeft=secs;state.activePlayer=prefs.startingPlayer;state.turnCounts=[0,0];state.turnCounts[prefs.startingPlayer]=1;}
     function resetMatchClock(){state.matchClockSeconds=Math.max(1,sanitizeInt(prefs.matchMinutes,20))*60;state.matchClockRunning=false;}
     function syncChessClock(){if(timerId){clearInterval(timerId);timerId=null;}if(prefs.timerEnabled&&(state.activePlayer===0||state.activePlayer===1)){timerId=setInterval(()=>{const p=state.players[state.activePlayer];p.timeLeft=Math.max(0,p.timeLeft-1);if(p.timeLeft<=0)state.activePlayer=null;render();saveState();if(state.activePlayer===null)syncChessClock();},1000);}}
     function syncMatchClock(){if(matchTimerId){clearInterval(matchTimerId);matchTimerId=null;}if(prefs.matchClockEnabled&&state.matchClockRunning){matchTimerId=setInterval(()=>{state.matchClockSeconds=Math.max(0,state.matchClockSeconds-1);if(state.matchClockSeconds<=0)state.matchClockRunning=false;render();saveState();if(!state.matchClockRunning)syncMatchClock();},1000);}}
+
     function render(){
-      lpEls[0].textContent=state.players[0].lp;lpEls[1].textContent=state.players[1].lp;
-      timeEls[0].textContent=prefs.timerEnabled?formatTime(state.players[0].timeLeft):"--:--";timeEls[1].textContent=prefs.timerEnabled?formatTime(state.players[1].timeLeft):"--:--";
-      timeEls[0].classList.toggle("low",prefs.timerEnabled&&state.players[0].timeLeft<=10&&state.players[0].timeLeft>0);timeEls[1].classList.toggle("low",prefs.timerEnabled&&state.players[1].timeLeft<=10&&state.players[1].timeLeft>0);
-      innerEls[0].classList.toggle("rotated",!!state.players[0].rotated);innerEls[1].classList.toggle("rotated",!!state.players[1].rotated);
-      nameEls[0].value=prefs.playerNames[0]||"Top Player";nameEls[1].value=prefs.playerNames[1]||"Bottom Player";
-      startingLpInput.value=prefs.startingLP;baseMinutesInput.value=prefs.baseMinutes;incrementInput.value=prefs.incrementSeconds;matchMinutesInput.value=prefs.matchMinutes;
-      timerEnabledToggle.classList.toggle("on",!!prefs.timerEnabled);chessMenuBlock.classList.toggle("collapsed",!prefs.timerEnabled);matchClockToggle.classList.toggle("on",!!prefs.matchClockEnabled);
-      turnBtns.forEach((btn,idx)=>{btn.classList.toggle("active",state.activePlayer===idx);const disabled=state.players[idx].timeLeft<=0&&prefs.timerEnabled;btn.classList.toggle("disabled",disabled);btn.textContent=state.activePlayer===idx?"■":"▶";});
-      document.querySelectorAll("[data-base-min]").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.baseMin)===Number(prefs.baseMinutes)));
-      document.querySelectorAll("[data-inc-sec]").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.incSec)===Number(prefs.incrementSeconds)));
-      document.querySelectorAll("[data-preset]").forEach(btn=>btn.classList.remove("active"));
-      if(Number(prefs.baseMinutes)===1&&Number(prefs.incrementSeconds)===0)document.querySelector('[data-preset="bullet"]').classList.add("active");
-      else if(Number(prefs.baseMinutes)===3&&Number(prefs.incrementSeconds)===2)document.querySelector('[data-preset="blitz"]').classList.add("active");
-      else if(Number(prefs.baseMinutes)===5&&Number(prefs.incrementSeconds)===5)document.querySelector('[data-preset="quick"]').classList.add("active");
-      document.getElementById("starter0Btn").classList.toggle("active",state.activePlayer===0);document.getElementById("starter1Btn").classList.toggle("active",state.activePlayer===1);
-      matchClockValue.textContent=prefs.matchClockEnabled?formatTime(state.matchClockSeconds):"--:--";matchClockState.textContent=`turn ${state.turnCounter} • ${!prefs.matchClockEnabled?"disabled":state.matchClockRunning?"running":"paused"}`;matchClockBtn.classList.toggle("off",!prefs.matchClockEnabled);
-      undoBtn.classList.toggle("disabled",lpUndo.length===0);redoBtn.classList.toggle("disabled",lpRedo.length===0);
+      lpEls[0].textContent=state.players[0].lp; lpEls[1].textContent=state.players[1].lp;
+      timeEls[0].textContent=prefs.timerEnabled?formatTime(state.players[0].timeLeft):'--:--'; timeEls[1].textContent=prefs.timerEnabled?formatTime(state.players[1].timeLeft):'--:--';
+      timeEls[0].classList.toggle('low', prefs.timerEnabled && state.players[0].timeLeft <= 10 && state.players[0].timeLeft > 0);
+      timeEls[1].classList.toggle('low', prefs.timerEnabled && state.players[1].timeLeft <= 10 && state.players[1].timeLeft > 0);
+      innerEls[0].classList.toggle('rotated', !!state.players[0].rotated); innerEls[1].classList.toggle('rotated', !!state.players[1].rotated);
+      nameEls[0].value=prefs.playerNames[0]||'Top Player'; nameEls[1].value=prefs.playerNames[1]||'Bottom Player';
+      drawTurnBadge(badgeEls[0], state.turnCounts[0]||0); drawTurnBadge(badgeEls[1], state.turnCounts[1]||0);
+
+      startingLpInput.value=prefs.startingLP; baseMinutesInput.value=prefs.baseMinutes; incrementInput.value=prefs.incrementSeconds; matchMinutesInput.value=prefs.matchMinutes;
+      timerEnabledToggle.classList.toggle('on', !!prefs.timerEnabled); chessMenuBlock.classList.toggle('collapsed', !prefs.timerEnabled); matchClockToggle.classList.toggle('on', !!prefs.matchClockEnabled);
+
+      turnBtns.forEach((btn,idx)=>{const isActive=state.activePlayer===idx;btn.classList.toggle('active', isActive);btn.classList.toggle('inactive', !isActive);btn.disabled = !isActive || (prefs.timerEnabled && state.players[idx].timeLeft<=0);btn.textContent = isActive ? '▶' : '○';});
+      document.querySelectorAll('[data-base-min]').forEach(btn=>btn.classList.toggle('active', Number(btn.dataset.baseMin)===Number(prefs.baseMinutes)));
+      document.querySelectorAll('[data-inc-sec]').forEach(btn=>btn.classList.toggle('active', Number(btn.dataset.incSec)===Number(prefs.incrementSeconds)));
+      document.querySelectorAll('[data-preset]').forEach(btn=>btn.classList.remove('active'));
+      if(Number(prefs.baseMinutes)===1&&Number(prefs.incrementSeconds)===0)document.querySelector('[data-preset="bullet"]').classList.add('active');
+      else if(Number(prefs.baseMinutes)===3&&Number(prefs.incrementSeconds)===2)document.querySelector('[data-preset="blitz"]').classList.add('active');
+      else if(Number(prefs.baseMinutes)===5&&Number(prefs.incrementSeconds)===5)document.querySelector('[data-preset="quick"]').classList.add('active');
+      document.getElementById('starter0Btn').classList.toggle('active', prefs.startingPlayer===0); document.getElementById('starter1Btn').classList.toggle('active', prefs.startingPlayer===1);
+      matchClockValue.textContent=prefs.matchClockEnabled?formatTime(state.matchClockSeconds):'--:--'; matchClockState.textContent=!prefs.matchClockEnabled?'disabled':state.matchClockRunning?'running':'paused'; matchClockBtn.classList.toggle('off', !prefs.matchClockEnabled);
+      undoBtn.classList.toggle('disabled', lpUndo.length===0); redoBtn.classList.toggle('disabled', lpRedo.length===0);
       renderHistory();
     }
-    function handTurnTo(buttonIndex){
-      const now=Date.now();if(now<turnCooldownUntil)return;turnCooldownUntil=now+250;
-      const prev=state.activePlayer;let nextPlayer=buttonIndex;if(prev===buttonIndex)nextPlayer=buttonIndex===0?1:0;
-      if(prefs.timerEnabled){if(state.players[nextPlayer].timeLeft<=0)return;if(prev===0||prev===1)state.players[prev].timeLeft+=sanitizeInt(prefs.incrementSeconds,0);state.activePlayer=nextPlayer;syncChessClock();}
-      else{state.activePlayer=nextPlayer;}
-      if(prev!==nextPlayer)state.turnCounter+=1;saveState();render();
-    }
-    function pauseTimers(){state.activePlayer=null;syncChessClock();saveState();render();}
-    function openKeypad(playerIndex,mode){
-      const last=Math.max(0,sanitizeInt((prefs.lastAmounts||[500,500])[playerIndex],500));pendingAction={playerIndex,mode,value:String(last),fresh:true};
-      document.getElementById("sheetPlayerLabel").textContent=prefs.playerNames[playerIndex]||("Player "+(playerIndex+1));document.getElementById("sheetActionTitle").textContent=mode==="add"?"Add LP":"Subtract LP";
-      document.getElementById("confirmActionBtn").className="confirm-btn "+(mode==="add"?"confirm-plus":"confirm-minus");
-      document.getElementById("keypadSheet").style.transform=`rotate(${state.players[playerIndex].rotated?180:0}deg)`;keypadHint.textContent=`Last used value loaded for ${prefs.playerNames[playerIndex]||("Player "+(playerIndex+1))}. First tap replaces it.`;
-      updateKeypadValue();document.getElementById("keypadOverlay").classList.remove("collapsed");
-    }
-    function closeKeypad(){pendingAction=null;document.getElementById("keypadOverlay").classList.add("collapsed");}
-    function updateKeypadValue(){document.getElementById("keypadValue").textContent=pendingAction&&pendingAction.value?pendingAction.value:"0";}
-    function keypadPress(key){if(!pendingAction)return;if(key==="back"){pendingAction.value=pendingAction.fresh?"":pendingAction.value.slice(0,-1);pendingAction.fresh=false;}else{if(pendingAction.fresh)pendingAction.value=key==="00"?"0":key;else pendingAction.value=(pendingAction.value+key).replace(/^0+(?=[0-9])/,"").slice(0,6);pendingAction.fresh=false;}updateKeypadValue();}
-    function confirmAction(){if(!pendingAction)return;const amount=sanitizeInt(pendingAction.value,0);if(amount<=0)return;pushLPUndo();const sign=pendingAction.mode==="add"?1:-1;const player=state.players[pendingAction.playerIndex];const before=player.lp;player.lp=Math.max(0,player.lp+sign*amount);prefs.lastAmounts[pendingAction.playerIndex]=amount;state.lpHistory.push({playerIndex:pendingAction.playerIndex,playerLabel:prefs.playerNames[pendingAction.playerIndex]||("Player "+(pendingAction.playerIndex+1)),type:pendingAction.mode,amount,before,after:player.lp,time:stamp()});savePrefs();saveState();animateLP(pendingAction.playerIndex);render();closeKeypad();}
-    function performReset(){state.players[0].lp=prefs.startingLP;state.players[1].lp=prefs.startingLP;resetPlayerTimes();resetMatchClock();syncChessClock();syncMatchClock();saveState();render();}
-    function startResetHold(){resetBtn.classList.add("arming");resetHoldTimeout=setTimeout(()=>{performReset();cancelResetHold();},3000);}
-    function cancelResetHold(){if(resetHoldTimeout){clearTimeout(resetHoldTimeout);resetHoldTimeout=null;}resetBtn.classList.remove("arming");const svg=resetBtn.querySelector("svg");if(svg){svg.style.animation="none";void svg.offsetWidth;svg.style.animation="";}}
-    function exportLog(){const lines=[];lines.push("Yu-Gi-Oh LP Tracker Log");lines.push(`Top: ${prefs.playerNames[0]}`);lines.push(`Bottom: ${prefs.playerNames[1]}`);lines.push("");if(!state.lpHistory.length)lines.push("No LP changes recorded.");state.lpHistory.forEach((entry,i)=>{lines.push(`${i+1}. ${entry.time} | ${entry.playerLabel} ${entry.type==="add"?"+":"-"}${entry.amount} | ${entry.before} -> ${entry.after}`);});const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="ygo-lp-log.txt";a.click();URL.revokeObjectURL(url);}
 
-    document.getElementById("minus0").addEventListener("click",()=>openKeypad(0,"subtract"));
-    document.getElementById("plus0").addEventListener("click",()=>openKeypad(0,"add"));
-    document.getElementById("minus1").addEventListener("click",()=>openKeypad(1,"subtract"));
-    document.getElementById("plus1").addEventListener("click",()=>openKeypad(1,"add"));
-    document.getElementById("turn0").addEventListener("click",()=>handTurnTo(0));
-    document.getElementById("turn1").addEventListener("click",()=>handTurnTo(1));
-    document.getElementById("rotate0").addEventListener("click",()=>{state.players[0].rotated=!state.players[0].rotated;saveState();render();});
-    document.getElementById("rotate1").addEventListener("click",()=>{state.players[1].rotated=!state.players[1].rotated;saveState();render();});
-    nameEls.forEach((el,idx)=>{el.addEventListener("change",()=>{prefs.playerNames[idx]=el.value.trim()||(idx===0?"Top Player":"Bottom Player");savePrefs();render();});});
-    document.querySelectorAll("[data-key]").forEach(btn=>btn.addEventListener("click",()=>keypadPress(btn.dataset.key)));
-    document.getElementById("confirmActionBtn").addEventListener("click",confirmAction);
-    document.getElementById("cancelActionBtn").addEventListener("click",closeKeypad);
-    document.getElementById("closeSheetBtn").addEventListener("click",closeKeypad);
-    undoBtn.addEventListener("click",()=>{if(!lpUndo.length)return;lpRedo.push({players:clone(state.players),lpHistory:clone(state.lpHistory)});const prev=lpUndo.pop();state.players[0].lp=prev.players[0].lp;state.players[1].lp=prev.players[1].lp;state.lpHistory=prev.lpHistory;saveState();animateLP(0);animateLP(1);render();});
-    redoBtn.addEventListener("click",()=>{if(!lpRedo.length)return;lpUndo.push({players:clone(state.players),lpHistory:clone(state.lpHistory)});const nxt=lpRedo.pop();state.players[0].lp=nxt.players[0].lp;state.players[1].lp=nxt.players[1].lp;state.lpHistory=nxt.lpHistory;saveState();animateLP(0);animateLP(1);render();});
-    matchClockBtn.addEventListener("click",()=>{if(!prefs.matchClockEnabled)return;state.matchClockRunning=!state.matchClockRunning;syncMatchClock();saveState();render();});
-    document.getElementById("historyBtn").addEventListener("click",()=>document.getElementById("historyOverlay").classList.remove("collapsed"));
-    document.getElementById("closeHistoryBtn").addEventListener("click",()=>document.getElementById("historyOverlay").classList.add("collapsed"));
-    document.getElementById("exportLogBtn").addEventListener("click",exportLog);
-    document.getElementById("settingsBtn").addEventListener("click",()=>document.getElementById("settingsOverlay").classList.remove("collapsed"));
-    document.getElementById("closeSettingsBtn").addEventListener("click",()=>document.getElementById("settingsOverlay").classList.add("collapsed"));
-    resetBtn.addEventListener("pointerdown",startResetHold);["pointerup","pointerleave","pointercancel"].forEach(ev=>resetBtn.addEventListener(ev,cancelResetHold));
-    document.getElementById("applyStartBtn").addEventListener("click",()=>{prefs.startingLP=Math.max(1,sanitizeInt(startingLpInput.value,8000));state.players[0].lp=prefs.startingLP;state.players[1].lp=prefs.startingLP;savePrefs();saveState();animateLP(0);animateLP(1);render();document.getElementById("settingsOverlay").classList.add("collapsed");});
-    document.querySelectorAll("[data-start]").forEach(btn=>btn.addEventListener("click",()=>{startingLpInput.value=btn.dataset.start;}));
-    timerEnabledToggle.addEventListener("click",()=>{prefs.timerEnabled=!prefs.timerEnabled;if(!prefs.timerEnabled)state.activePlayer=null;syncChessClock();savePrefs();saveState();render();});
-    document.querySelectorAll("[data-preset]").forEach(btn=>btn.addEventListener("click",()=>{const preset=btn.dataset.preset;if(preset==="bullet"){prefs.baseMinutes=1;prefs.incrementSeconds=0;}if(preset==="blitz"){prefs.baseMinutes=3;prefs.incrementSeconds=2;}if(preset==="quick"){prefs.baseMinutes=5;prefs.incrementSeconds=5;}resetPlayerTimes();savePrefs();saveState();render();syncChessClock();}));
-    document.querySelectorAll("[data-base-min]").forEach(btn=>btn.addEventListener("click",()=>{prefs.baseMinutes=Number(btn.dataset.baseMin);resetPlayerTimes();savePrefs();saveState();render();syncChessClock();}));
-    document.querySelectorAll("[data-inc-sec]").forEach(btn=>btn.addEventListener("click",()=>{prefs.incrementSeconds=Number(btn.dataset.incSec);savePrefs();saveState();render();}));
-    baseMinutesInput.addEventListener("change",()=>{prefs.baseMinutes=Math.max(1,sanitizeInt(baseMinutesInput.value,3));resetPlayerTimes();savePrefs();saveState();render();syncChessClock();});
-    incrementInput.addEventListener("change",()=>{prefs.incrementSeconds=Math.max(0,sanitizeInt(incrementInput.value,0));savePrefs();saveState();render();});
-    document.getElementById("starter0Btn").addEventListener("click",()=>{state.activePlayer=0;syncChessClock();saveState();render();});
-    document.getElementById("starter1Btn").addEventListener("click",()=>{state.activePlayer=1;syncChessClock();saveState();render();});
-    document.getElementById("pauseTimersBtn").addEventListener("click",pauseTimers);
-    document.getElementById("resetTimersBtn").addEventListener("click",()=>{resetPlayerTimes();syncChessClock();saveState();render();});
-    matchClockToggle.addEventListener("click",()=>{prefs.matchClockEnabled=!prefs.matchClockEnabled;if(!prefs.matchClockEnabled)state.matchClockRunning=false;syncMatchClock();savePrefs();saveState();render();});
-    matchMinutesInput.addEventListener("change",()=>{prefs.matchMinutes=Math.max(1,sanitizeInt(matchMinutesInput.value,20));resetMatchClock();syncMatchClock();savePrefs();saveState();render();});
-    document.getElementById("matchPauseBtn").addEventListener("click",()=>{state.matchClockRunning=false;syncMatchClock();saveState();render();});
-    document.getElementById("matchResetBtn").addEventListener("click",()=>{resetMatchClock();syncMatchClock();saveState();render();});
-    document.getElementById("keypadOverlay").addEventListener("click",(e)=>{if(e.target.id==="keypadOverlay")closeKeypad();});
-    document.getElementById("settingsOverlay").addEventListener("click",(e)=>{if(e.target.id==="settingsOverlay")document.getElementById("settingsOverlay").classList.add("collapsed");});
-    document.getElementById("historyOverlay").addEventListener("click",(e)=>{if(e.target.id==="historyOverlay")document.getElementById("historyOverlay").classList.add("collapsed");});
-    window.addEventListener("resize",()=>{if(!document.getElementById("historyOverlay").classList.contains("collapsed"))renderHistory();});
-    if(!state.players[0].timeLeft||!state.players[1].timeLeft)resetPlayerTimes();
-    if(!state.matchClockSeconds)resetMatchClock();
-    if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
-    render();syncChessClock();syncMatchClock();
+    function handTurnTo(buttonIndex){const now=Date.now();if(now<turnCooldownUntil)return;turnCooldownUntil=now+250;if(state.activePlayer!==buttonIndex)return;const nextPlayer=buttonIndex===0?1:0;if(prefs.timerEnabled&&state.players[nextPlayer].timeLeft<=0)return;if(prefs.timerEnabled)state.players[buttonIndex].timeLeft+=sanitizeInt(prefs.incrementSeconds,0);state.activePlayer=nextPlayer;state.turnCounts[nextPlayer]=(state.turnCounts[nextPlayer]||0)+1;syncChessClock();saveState();render();}
+    function pauseTimers(){state.activePlayer=null;syncChessClock();saveState();render();}
+    function openKeypad(playerIndex,mode){const last=Math.max(0,sanitizeInt((prefs.lastAmounts||[500,500])[playerIndex],500));pendingAction={playerIndex,mode,value:String(last),fresh:true};document.getElementById('sheetPlayerLabel').textContent=prefs.playerNames[playerIndex]||('Player '+(playerIndex+1));document.getElementById('sheetActionTitle').textContent=mode==='add'?'Add LP':'Subtract LP';document.getElementById('confirmActionBtn').className='confirm-btn '+(mode==='add'?'confirm-plus':'confirm-minus');document.getElementById('keypadSheet').style.transform=`rotate(${state.players[playerIndex].rotated?180:0}deg)`;keypadHint.textContent=`Last used value loaded for ${prefs.playerNames[playerIndex]||('Player '+(playerIndex+1))}. First tap replaces it.`;updateKeypadValue();document.getElementById('keypadOverlay').classList.remove('collapsed');}
+    function closeKeypad(){pendingAction=null;document.getElementById('keypadOverlay').classList.add('collapsed');}
+    function updateKeypadValue(){document.getElementById('keypadValue').textContent=pendingAction&&pendingAction.value?pendingAction.value:'0';}
+    function keypadPress(key){if(!pendingAction)return;if(key==='back'){pendingAction.value=pendingAction.fresh?'':pendingAction.value.slice(0,-1);pendingAction.fresh=false;}else{if(pendingAction.fresh){pendingAction.value=key==='00'?'0':key;}else{pendingAction.value=(pendingAction.value+key).replace(/^0+(?=[0-9])/,'').slice(0,6);}pendingAction.fresh=false;}updateKeypadValue();}
+    function confirmAction(){if(!pendingAction)return;const amount=sanitizeInt(pendingAction.value,0);if(amount<=0)return;pushLPUndo();const sign=pendingAction.mode==='add'?1:-1;const player=state.players[pendingAction.playerIndex];const before=player.lp;player.lp=Math.max(0,player.lp+sign*amount);prefs.lastAmounts[pendingAction.playerIndex]=amount;state.lpHistory.push({playerIndex:pendingAction.playerIndex,playerLabel:prefs.playerNames[pendingAction.playerIndex]||('Player '+(pendingAction.playerIndex+1)),type:pendingAction.mode,amount,before,after:player.lp,time:stamp()});savePrefs();saveState();animateLP(pendingAction.playerIndex);render();closeKeypad();}
+    function performReset(){state.players[0].lp=prefs.startingLP;state.players[1].lp=prefs.startingLP;resetPlayerTimes();resetMatchClock();syncChessClock();syncMatchClock();saveState();render();}
+    function startResetHold(){cancelResetHold();const start=performance.now();resetBtn.classList.add('arming');function step(now){const progress=Math.min(1,(now-start)/1000);resetBtn.style.setProperty('--hold', String(progress));if(progress>=1){performReset();cancelResetHold();return;}resetRAF=requestAnimationFrame(step);}resetRAF=requestAnimationFrame(step);}    
+    function cancelResetHold(){if(resetHoldTimeout){clearTimeout(resetHoldTimeout);resetHoldTimeout=null;}if(resetRAF){cancelAnimationFrame(resetRAF);resetRAF=null;}resetBtn.classList.remove('arming');resetBtn.style.setProperty('--hold','0');}
+    function exportLog(){const lines=[];lines.push('Yu-Gi-Oh LP Tracker Log');lines.push(`Top: ${prefs.playerNames[0]}`);lines.push(`Bottom: ${prefs.playerNames[1]}`);lines.push(`Turns: ${prefs.playerNames[0]} ${state.turnCounts[0]||0}, ${prefs.playerNames[1]} ${state.turnCounts[1]||0}`);lines.push('');if(!state.lpHistory.length)lines.push('No LP changes recorded.');state.lpHistory.forEach((entry,i)=>lines.push(`${i+1}. ${entry.time} | ${entry.playerLabel} ${entry.type==='add'?'+':'-'}${entry.amount} | ${entry.before} -> ${entry.after}`));const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ygo-lp-log.txt';a.click();URL.revokeObjectURL(url);}
+
+    document.getElementById('minus0').addEventListener('click',()=>openKeypad(0,'subtract')); document.getElementById('plus0').addEventListener('click',()=>openKeypad(0,'add')); document.getElementById('minus1').addEventListener('click',()=>openKeypad(1,'subtract')); document.getElementById('plus1').addEventListener('click',()=>openKeypad(1,'add'));
+    document.getElementById('turn0').addEventListener('click',()=>handTurnTo(0)); document.getElementById('turn1').addEventListener('click',()=>handTurnTo(1));
+    document.getElementById('rotate0').addEventListener('click',()=>{state.players[0].rotated=!state.players[0].rotated;saveState();render();}); document.getElementById('rotate1').addEventListener('click',()=>{state.players[1].rotated=!state.players[1].rotated;saveState();render();});
+    nameEls.forEach((el,idx)=>el.addEventListener('change',()=>{prefs.playerNames[idx]=el.value.trim()||(idx===0?'Top Player':'Bottom Player');savePrefs();render();}));
+    document.querySelectorAll('[data-key]').forEach(btn=>btn.addEventListener('click',()=>keypadPress(btn.dataset.key)));
+    document.getElementById('confirmActionBtn').addEventListener('click',confirmAction); document.getElementById('cancelActionBtn').addEventListener('click',closeKeypad); document.getElementById('closeSheetBtn').addEventListener('click',closeKeypad);
+    undoBtn.addEventListener('click',()=>{if(!lpUndo.length)return;lpRedo.push({players:clone(state.players),lpHistory:clone(state.lpHistory)});const prev=lpUndo.pop();state.players[0].lp=prev.players[0].lp;state.players[1].lp=prev.players[1].lp;state.lpHistory=prev.lpHistory;saveState();animateLP(0);animateLP(1);render();});
+    redoBtn.addEventListener('click',()=>{if(!lpRedo.length)return;lpUndo.push({players:clone(state.players),lpHistory:clone(state.lpHistory)});const nxt=lpRedo.pop();state.players[0].lp=nxt.players[0].lp;state.players[1].lp=nxt.players[1].lp;state.lpHistory=nxt.lpHistory;saveState();animateLP(0);animateLP(1);render();});
+    matchClockBtn.addEventListener('click',()=>{if(!prefs.matchClockEnabled)return;state.matchClockRunning=!state.matchClockRunning;syncMatchClock();saveState();render();});
+    document.getElementById('historyBtn').addEventListener('click',()=>document.getElementById('historyOverlay').classList.remove('collapsed')); document.getElementById('closeHistoryBtn').addEventListener('click',()=>document.getElementById('historyOverlay').classList.add('collapsed')); document.getElementById('exportLogBtn').addEventListener('click',exportLog);
+    document.getElementById('settingsBtn').addEventListener('click',()=>document.getElementById('settingsOverlay').classList.remove('collapsed')); document.getElementById('closeSettingsBtn').addEventListener('click',()=>document.getElementById('settingsOverlay').classList.add('collapsed'));
+    resetBtn.addEventListener('pointerdown', startResetHold); ['pointerup','pointerleave','pointercancel'].forEach(ev=>resetBtn.addEventListener(ev, cancelResetHold));
+    document.getElementById('applyStartBtn').addEventListener('click',()=>{prefs.startingLP=Math.max(1,sanitizeInt(startingLpInput.value,8000));state.players[0].lp=prefs.startingLP;state.players[1].lp=prefs.startingLP;savePrefs();saveState();animateLP(0);animateLP(1);render();document.getElementById('settingsOverlay').classList.add('collapsed');});
+    document.querySelectorAll('[data-start]').forEach(btn=>btn.addEventListener('click',()=>{startingLpInput.value=btn.dataset.start;}));
+    timerEnabledToggle.addEventListener('click',()=>{prefs.timerEnabled=!prefs.timerEnabled;if(!prefs.timerEnabled)state.activePlayer=prefs.startingPlayer;syncChessClock();savePrefs();saveState();render();});
+    document.querySelectorAll('[data-preset]').forEach(btn=>btn.addEventListener('click',()=>{const preset=btn.dataset.preset;if(preset==='bullet'){prefs.baseMinutes=1;prefs.incrementSeconds=0;}if(preset==='blitz'){prefs.baseMinutes=3;prefs.incrementSeconds=2;}if(preset==='quick'){prefs.baseMinutes=5;prefs.incrementSeconds=5;}resetPlayerTimes();savePrefs();saveState();render();syncChessClock();}));
+    document.querySelectorAll('[data-base-min]').forEach(btn=>btn.addEventListener('click',()=>{prefs.baseMinutes=Number(btn.dataset.baseMin);resetPlayerTimes();savePrefs();saveState();render();syncChessClock();}));
+    document.querySelectorAll('[data-inc-sec]').forEach(btn=>btn.addEventListener('click',()=>{prefs.incrementSeconds=Number(btn.dataset.incSec);savePrefs();saveState();render();}));
+    baseMinutesInput.addEventListener('change',()=>{prefs.baseMinutes=Math.max(1,sanitizeInt(baseMinutesInput.value,3));resetPlayerTimes();savePrefs();saveState();render();syncChessClock();});
+    incrementInput.addEventListener('change',()=>{prefs.incrementSeconds=Math.max(0,sanitizeInt(incrementInput.value,0));savePrefs();saveState();render();});
+    document.getElementById('starter0Btn').addEventListener('click',()=>{prefs.startingPlayer=0;savePrefs();render();}); document.getElementById('starter1Btn').addEventListener('click',()=>{prefs.startingPlayer=1;savePrefs();render();});
+    document.getElementById('pauseTimersBtn').addEventListener('click',pauseTimers); document.getElementById('resetTimersBtn').addEventListener('click',()=>{resetPlayerTimes();syncChessClock();saveState();render();});
+    matchClockToggle.addEventListener('click',()=>{prefs.matchClockEnabled=!prefs.matchClockEnabled;if(!prefs.matchClockEnabled)state.matchClockRunning=false;syncMatchClock();savePrefs();saveState();render();});
+    matchMinutesInput.addEventListener('change',()=>{prefs.matchMinutes=Math.max(1,sanitizeInt(matchMinutesInput.value,20));resetMatchClock();syncMatchClock();savePrefs();saveState();render();});
+    document.getElementById('matchPauseBtn').addEventListener('click',()=>{state.matchClockRunning=false;syncMatchClock();saveState();render();}); document.getElementById('matchResetBtn').addEventListener('click',()=>{resetMatchClock();syncMatchClock();saveState();render();});
+    document.getElementById('keypadOverlay').addEventListener('click',(e)=>{if(e.target.id==='keypadOverlay')closeKeypad();}); document.getElementById('settingsOverlay').addEventListener('click',(e)=>{if(e.target.id==='settingsOverlay')document.getElementById('settingsOverlay').classList.add('collapsed');}); document.getElementById('historyOverlay').addEventListener('click',(e)=>{if(e.target.id==='historyOverlay')document.getElementById('historyOverlay').classList.add('collapsed');});
+    window.addEventListener('resize',()=>{if(!document.getElementById('historyOverlay').classList.contains('collapsed'))renderHistory();});
+    if(!Array.isArray(state.turnCounts) || state.turnCounts.length!==2){ state.turnCounts = prefs.startingPlayer===0?[1,0]:[0,1]; }
+    if(!state.players[0].timeLeft||!state.players[1].timeLeft)resetPlayerTimes(); if(!state.matchClockSeconds)resetMatchClock();
+    if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js')); }
+    render(); syncChessClock(); syncMatchClock();
   </script>
 </body>
 </html>
