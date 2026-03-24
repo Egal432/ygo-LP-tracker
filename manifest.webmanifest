@@ -1,7 +1,7 @@
 {
   "name": "Yu-Gi-Oh! LP Tracker",
   "short_name": "LP Tracker",
-  "description": "Minimal smartphone-first Yu-Gi-Oh! life point tracker with chess clock, match clock, history, player names, and reset confirm.",
+  "description": "Minimal smartphone-first Yu-Gi-Oh! life point tracker with chess clock, micro-animations, smarter keypad flow, long-press reset, and history charts.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#000000",
