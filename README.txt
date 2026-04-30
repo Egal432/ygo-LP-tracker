@@ -1,4 +1,12 @@
-Upload these files to GitHub Pages or another static host, then open the URL in Chrome on Android and install it.
+Yu-Gi-Oh! LP Tracker PWA v9
 
-
-New in v8: /2, +1000, RoD utility buttons, simplified history.
+What changed in v9:
+- Removed chess timer entirely
+- Removed turn handoff / play button system
+- Replaced middle action button with a radial menu
+- Radial menu supports:
+  - tap to open and tap an action
+  - press-drag-release to select in one motion
+- Moved /2 into the radial menu
+- Kept match clock, history, undo/redo, names, and fast reset hold
+- Reset hold duration set to 400 ms
