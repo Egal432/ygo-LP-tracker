@@ -186,11 +186,11 @@
     <div class="radial-stage" id="radialStage">
       <svg class="radial-svg" viewBox="0 0 260 260"><line id="radialLine" x1="130" y1="130" x2="130" y2="130" class="radial-path"></line></svg>
       <button class="radial-center" id="radialCenterBtn" aria-label="Close actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M3 12h18"/><path d="m7 7 10 10"/><path d="m17 7-10 10"/></svg></button>
-      <button class="radial-item" data-radial-action="half" style="--x:-39px;--y:-112px;animation-delay:0s"><div class="t1">/2</div><div class="t2">half</div></button>
-      <button class="radial-item" data-radial-action="plus1k" style="--x:57px;--y:-86px;animation-delay:.2s"><div class="t1">+1000</div><div class="t2">gain</div></button>
-      <button class="radial-item" data-radial-action="upstart" style="--x:82px;--y:10px;animation-delay:.4s"><div class="t1">Upstart</div><div class="t2">opp +1000</div></button>
-      <button class="radial-item" data-radial-action="duo" style="--x:-82px;--y:10px;animation-delay:.6s"><div class="t1">Duo</div><div class="t2">self -1000</div></button>
-      <button class="radial-item" data-radial-action="rod" style="--x:-57px;--y:86px;animation-delay:.8s"><div class="t1">RoD</div><div class="t2">both -X</div></button>
+      <button class="radial-item" data-radial-action="half" style="--x:-39px;--y:-102px;animation-delay:0s"><div class="t1">/2</div><div class="t2">half</div></button>
+      <button class="radial-item" data-radial-action="plus1k" style="--x:37px;--y:-70px;animation-delay:.2s"><div class="t1">+1000</div><div class="t2">gain</div></button>
+      <button class="radial-item" data-radial-action="upstart" style="--x:64px;--y:18px;animation-delay:.4s"><div class="t1">Upstart</div><div class="t2">opp +1000</div></button>
+      <button class="radial-item" data-radial-action="duo" style="--x:-142px;--y:18px;animation-delay:.6s"><div class="t1">Duo</div><div class="t2">self -1000</div></button>
+      <button class="radial-item" data-radial-action="rod" style="--x:-116px;--y:102px;animation-delay:.8s"><div class="t1">RoD</div><div class="t2">both -X</div></button>
     </div>
   </div>
 
@@ -225,10 +225,17 @@
     const PREFS_KEY = "ygo_lp_tracker_v9_prefs";
     const RESET_HOLD_MS = 400;
     const DEFAULT_PREFS = () => ({startingLP:8000,matchClockEnabled:true,matchMinutes:20,playerNames:["Top Player","Bottom Player"],lastAmounts:[500,500],lastRodAmount:500});
-    const DEFAULT_STATE = (prefs) => ({players:[{lp:prefs.startingLP,rotated:true},{lp:prefs.startingLP,rotated:false}],matchClockSeconds:prefs.matchMinutes*60,matchClockRunning:false,lpHistory:[]});
+    const DEFAULT_STATE = (prefs) => ({players:[{lp:prefs.startingLP,rotation:180},{lp:prefs.startingLP,rotation:0}],matchClockSeconds:prefs.matchMinutes*60,matchClockRunning:false,lpHistory:[]});
 
     let prefs = loadPrefs() || DEFAULT_PREFS();
     let state = loadState() || DEFAULT_STATE(prefs);
+    if (state && state.players) {
+      state.players.forEach((p, idx) => {
+        if (typeof p.rotation !== "number") {
+          p.rotation = p.rotated ? 180 : 0;
+        }
+      });
+    }
     let lpUndo = [], lpRedo = [], matchTimerId = null, pendingAction = null;
     let resetHoldTimeout = null, resetAnimFrame = null, resetStartTime = 0;
     let radialState = {open:false,playerIndex:0,sticky:false,dragging:false,startX:0,startY:0,activeAction:null,centerX:0,centerY:0};
@@ -245,7 +252,7 @@
     const RESET_CIRC = 2 * Math.PI * 16;
     resetProgress.style.strokeDasharray = String(RESET_CIRC);
     resetProgress.style.strokeDashoffset = String(RESET_CIRC);
-    const radialPos = {half:{x:91,y:18},plus1k:{x:187,y:44},upstart:{x:212,y:140},duo:{x:48,y:140},rod:{x:73,y:216}};
+    const radialPos = {half:{x:91,y:28},plus1k:{x:167,y:60},upstart:{x:194,y:148},duo:{x:48,y:148},rod:{x:74,y:232}};
 
     function savePrefs(){localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));}
     function loadPrefs(){try{const raw=localStorage.getItem(PREFS_KEY);return raw?JSON.parse(raw):null;}catch{return null;}}
@@ -296,8 +303,8 @@
     radialCenterBtn.addEventListener("click",()=>closeRadial());
     radialOverlay.addEventListener("click",(e)=>{if(e.target===radialOverlay)closeRadial();});
 
-    document.getElementById("rotate0").addEventListener("click",()=>{state.players[0].rotated=!state.players[0].rotated;saveState();render();});
-    document.getElementById("rotate1").addEventListener("click",()=>{state.players[1].rotated=!state.players[1].rotated;saveState();render();});
+    document.getElementById("rotate0").addEventListener("click",()=>{const cur = typeof state.players[0].rotation === "number" ? state.players[0].rotation : (state.players[0].rotated ? 180 : 0); state.players[0].rotation = (cur + 90) % 360; saveState(); render();});
+    document.getElementById("rotate1").addEventListener("click",()=>{const cur = typeof state.players[1].rotation === "number" ? state.players[1].rotation : (state.players[1].rotated ? 180 : 0); state.players[1].rotation = (cur + 90) % 360; saveState(); render();});
     nameEls.forEach((el,idx)=>{el.addEventListener("change",()=>{prefs.playerNames[idx]=el.value.trim()||(idx===0?"Top Player":"Bottom Player");savePrefs();render();});});
     document.querySelectorAll("[data-key]").forEach(btn=>btn.addEventListener("click",()=>keypadPress(btn.dataset.key)));
     document.getElementById("confirmActionBtn").addEventListener("click",confirmAction);
